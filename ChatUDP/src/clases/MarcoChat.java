@@ -8,6 +8,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,11 +36,10 @@ public class MarcoChat extends JFrame {
     private JTextArea taTextoChat;
     private boolean desconectar = false;
     private String nombreUser;
-    private Socket sc;
+    private DatagramSocket sc;
     private PrintWriter out;
 
-    private final int PUERTO_SERVIDOR = 6001;
-    private final String HOST = "localhost";
+    final int PUERTO_SERVER = 6001;
 
     public void lanzarChat(){
         this.setContentPane(mainPanel);
@@ -79,14 +81,29 @@ public class MarcoChat extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String user = nombreUsuario + "$-> ";
+                //String user = nombreUsuario + "$-> ";
 
-                String mensaje = user + tfChat.getText() + "\n";
+                //String mensaje = user + tfChat.getText() + "\n";
                 //Mandar el mensaje al otro
-                out.println(mensaje);
+                //out.println(mensaje);
 
                 //Limpiar el área de texto
-                tfChat.setText("");
+               // tfChat.setText("");
+
+                String mensaje = tfChat.getText() + "\n";
+                if (!mensaje.isEmpty()) {
+                    try {
+                        byte[] data = mensaje.getBytes();
+
+                        InetAddress direccionServer = InetAddress.getByName("localhost");
+                        DatagramPacket envio = new DatagramPacket(data, data.length, direccionServer, PUERTO_SERVER);
+                        sc.send(envio);
+                        //Limpiar el campo
+                        tfChat.setText("");
+                    } catch (IOException ex) {
+                    ex.printStackTrace();
+                    }
+                }
 
             }
         });
@@ -109,23 +126,14 @@ public class MarcoChat extends JFrame {
 
     }
 
+
     private void conectarServidor() {
 
-        try {
-            sc = new Socket(HOST, PUERTO_SERVIDOR);
 
-            out = new PrintWriter(sc.getOutputStream(), true);
-            out.println(nombreUser);
-
-            ClienteHilo ch = new ClienteHilo();
-            Thread hiloCli = new Thread(ch);
-            hiloCli.start();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
     }
+
+
 
     private class ClienteHilo implements Runnable {
 
