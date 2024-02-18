@@ -4,10 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.*;
 
 
@@ -15,11 +12,12 @@ public class MarcoChat extends JFrame {
 
     public static void main(String[] args) {
 
+
         String nombreUser = "";
 
-            nombreUser = JOptionPane.showInputDialog("Escribe tu nick");
-            MarcoChat chat = new MarcoChat(nombreUser);
-            chat.lanzarChat();
+        nombreUser = JOptionPane.showInputDialog("Escribe tu nick");
+        MarcoChat chat = new MarcoChat(nombreUser);
+        chat.lanzarChat();
     }
 
     private JPanel mainPanel;
@@ -41,7 +39,7 @@ public class MarcoChat extends JFrame {
         this.setVisible(true);
         this.setTitle("CHAT DE  " + nombreUser.toUpperCase());
         conectarServidor();
-        mandarUsuariosConectados();
+
 
     }
     public MarcoChat(String nombreUsuario) {
@@ -68,6 +66,7 @@ public class MarcoChat extends JFrame {
         this.setResizable(false);
 
         this.darNombreChat(nombreUser.toUpperCase());
+        mandarUsuariosConectados();
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -76,24 +75,23 @@ public class MarcoChat extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String mensaje = tfChat.getText() + "\n";
-                if (!mensaje.isEmpty()) {
-                    try {
-                        byte[] data = mensaje.getBytes();
+                String user = nombreUsuario + "$-> ";
+                String mensaje = user + tfChat.getText() + "\n";
 
-                        InetAddress direccionServer = InetAddress.getByName("localhost");
-                        DatagramPacket envio = new DatagramPacket(data, data.length, direccionServer, PUERTO_SERVER);
-                        sc.send(envio);
-                        //Limpiar el campo
-                        tfChat.setText("");
-                    } catch (IOException ex) {
+                try {
+                    byte[] data = mensaje.getBytes();
+
+                    InetAddress direccionServer = InetAddress.getByName("localhost");
+                    DatagramPacket envio = new DatagramPacket(data, data.length, direccionServer, PUERTO_SERVER);
+                    sc.send(envio);
+                    //Limpiar el campo
+                    tfChat.setText("");
+                } catch (IOException ex) {
                     ex.printStackTrace();
-                    }
                 }
 
             }
         });
-
 
         //Desconectar usuario
         btnDesconect.addActionListener(new ActionListener() {
@@ -102,16 +100,15 @@ public class MarcoChat extends JFrame {
 
                 try {
                     sc.close();
+                    System.exit(0);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                System.exit(0);
+
             }
         });
 
-
     }
-
 
     private void conectarServidor() {
 
@@ -161,14 +158,16 @@ public class MarcoChat extends JFrame {
 
         }
     }
-    private String darNombreChat(String nombre) {
+    private void darNombreChat(String nombre) {
 
         this.lblChat.setText(nombre);
+        //this.taUsers.append(nombreUser);
 
-        return this.lblChat.getText();
+        //return this.lblChat.getText();
     }
 
     private void mandarUsuariosConectados() {
+
 
        this.taUsers.append(nombreUser);
 

@@ -3,7 +3,6 @@ package clases;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +24,7 @@ public class Server_UDP {
 
         try {
             sc = new DatagramSocket(PUERTO_SERVER);
-            System.out.println("sERVIDOR ESCUCHANDO EN EL PUERTO " + PUERTO_SERVER);
+            System.out.println("SERVIDOR ESCUCHANDO EN EL PUERTO " + PUERTO_SERVER);
 
             while(true){
                 byte[] buffer = new byte[1024];
@@ -40,12 +39,10 @@ public class Server_UDP {
 
             }
 
-
-
         } catch (SocketException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -58,5 +55,7 @@ public class Server_UDP {
         }
     }
     //Método eliminar cliente
-
+    public void eliminarCliente(Cliente_UDP client) {
+        clientes.remove(client);
+    }
 }
