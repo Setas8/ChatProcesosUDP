@@ -8,12 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
+import java.net.*;
+
 
 public class MarcoChat extends JFrame {
 
@@ -34,12 +30,11 @@ public class MarcoChat extends JFrame {
     private JLabel lblUsers;
     private JTextArea taUsers;
     private JTextArea taTextoChat;
-    private boolean desconectar = false;
     private String nombreUser;
     private DatagramSocket sc;
-    private PrintWriter out;
 
     final int PUERTO_SERVER = 6001;
+
 
     public void lanzarChat(){
         this.setContentPane(mainPanel);
@@ -81,15 +76,6 @@ public class MarcoChat extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                //String user = nombreUsuario + "$-> ";
-
-                //String mensaje = user + tfChat.getText() + "\n";
-                //Mandar el mensaje al otro
-                //out.println(mensaje);
-
-                //Limpiar el área de texto
-               // tfChat.setText("");
-
                 String mensaje = tfChat.getText() + "\n";
                 if (!mensaje.isEmpty()) {
                     try {
@@ -113,11 +99,11 @@ public class MarcoChat extends JFrame {
         btnDesconect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                out.close();
+
                 try {
                     sc.close();
-                } catch (IOException ioe) {
-                    throw new RuntimeException(ioe);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
                 System.exit(0);
             }
@@ -129,7 +115,26 @@ public class MarcoChat extends JFrame {
 
     private void conectarServidor() {
 
+        try {
+            sc = new DatagramSocket();
 
+            String nombre = nombreUser;
+            byte[] buffer = nombre.getBytes();
+            InetAddress direccionServer = InetAddress.getByName("localhost");
+            DatagramPacket paquete = new DatagramPacket(buffer, buffer.length, direccionServer, PUERTO_SERVER);
+            sc.send(paquete);
+
+            ClienteHilo cli = new ClienteHilo();
+            Thread hiloCliente = new Thread(cli);
+            hiloCliente.start();
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -140,9 +145,13 @@ public class MarcoChat extends JFrame {
         @Override
         public void run() {
             try {
-                BufferedReader in = new BufferedReader(new InputStreamReader(sc.getInputStream()));
-                String texto = "";
-                while ((texto = in.readLine()) != null){
+                while (true){
+                    byte[] buffer = new byte[1024];
+                    DatagramPacket recibir = new DatagramPacket(buffer, buffer.length);
+                    sc.receive(recibir);
+
+                    String texto = new String(recibir.getData(),0, recibir.getLength());
+
                     taTextoChat.append(texto + "\n");
                 }
 
