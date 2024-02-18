@@ -18,6 +18,9 @@ public class Cliente_UDP implements Runnable {
         this.paquete = paquete;
         this.server = server;
     }
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
 
     public void enviarMensaje(String mensaje) {
 
@@ -33,6 +36,9 @@ public class Cliente_UDP implements Runnable {
             e.printStackTrace();
         }
     }
+    public void enviarListaClientes(String listaClientes) {
+        enviarMensaje(listaClientes);
+    }
 
     @Override
     public void run() {
@@ -40,8 +46,8 @@ public class Cliente_UDP implements Runnable {
             nombreCliente = new String(paquete.getData(), 0, paquete.getLength());
             System.out.println("Nuevo cliente conectado: " + nombreCliente);
 
-            server.mandarMensaje(nombreCliente + " se unió al chat", this);
-
+            //server.mandarMensaje(nombreCliente + " se unió al chat", this);
+            server.mandarListaClientes();
 
             while (true) {
                 byte[] buffer = new byte[1024];

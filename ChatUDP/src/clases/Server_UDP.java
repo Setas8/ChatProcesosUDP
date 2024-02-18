@@ -54,6 +54,16 @@ public class Server_UDP {
             }
         }
     }
+    public void mandarListaClientes() {
+        StringBuilder listaClientes = new StringBuilder("Usuarios conectados:\n");
+        for (Cliente_UDP cliente : clientes) {
+            listaClientes.append("- ").append(cliente.getNombreCliente()).append("\n");
+        }
+
+        for (Cliente_UDP cliente : clientes) {
+            cliente.enviarListaClientes(listaClientes.toString());
+        }
+    }
     //Método eliminar cliente
     public void eliminarCliente(Cliente_UDP client) {
         clientes.remove(client);

@@ -149,7 +149,13 @@ public class MarcoChat extends JFrame {
 
                     String texto = new String(recibir.getData(),0, recibir.getLength());
 
-                    taTextoChat.append(texto + "\n");
+                    if (texto.startsWith("Usuarios conectados:")) {
+                        actualizarListaUsuarios(texto);
+                    } else {
+                        // Si no es la lista de clientes, muestra el mensaje en el JTextArea de chat
+                        taTextoChat.append(texto + "\n");
+                    }
+
                 }
 
             } catch (IOException e) {
@@ -157,6 +163,15 @@ public class MarcoChat extends JFrame {
             }
 
         }
+    }
+    private void actualizarListaUsuarios(String clientList) {
+        // Actualiza el JTextArea de la lista de clientes
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                taUsers.setText(clientList);
+            }
+        });
     }
     private void darNombreChat(String nombre) {
 
