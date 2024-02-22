@@ -7,11 +7,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.*;
 
-
 public class MarcoChat extends JFrame {
 
     public static void main(String[] args) {
-
 
         String nombreUser = "";
 
@@ -39,8 +37,6 @@ public class MarcoChat extends JFrame {
         this.setVisible(true);
         this.setTitle("CHAT DE  " + nombreUser.toUpperCase());
         conectarServidor();
-
-
     }
     public MarcoChat(String nombreUsuario) {
 
@@ -55,6 +51,7 @@ public class MarcoChat extends JFrame {
         int anchoPantalla = pantallaSize.width;
         int alturaPantalla = pantallaSize.height;
 
+        //Establecer dimensiones del chat
         this.setSize(anchoPantalla / 2, alturaPantalla / 2);
         this.setLocation(anchoPantalla / 4, alturaPantalla / 4);
 
@@ -70,7 +67,7 @@ public class MarcoChat extends JFrame {
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        //Enviar mensajes al panel del chat   ///MAndarlo por UDP
+        //Enviar mensajes al panel del chat
         btnEnviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,7 +106,6 @@ public class MarcoChat extends JFrame {
         });
 
     }
-
     private void conectarServidor() {
 
         try {
@@ -134,11 +130,7 @@ public class MarcoChat extends JFrame {
         }
 
     }
-
-
-
     private class ClienteHilo implements Runnable {
-
         @Override
         public void run() {
             try {
@@ -157,11 +149,9 @@ public class MarcoChat extends JFrame {
                     }
 
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
     private void actualizarListaUsuarios(String clientList) {
@@ -176,17 +166,11 @@ public class MarcoChat extends JFrame {
     private void darNombreChat(String nombre) {
 
         this.lblChat.setText(nombre);
-        //this.taUsers.append(nombreUser);
-
-        //return this.lblChat.getText();
     }
-
     private void mandarUsuariosConectados() {
 
 
        this.taUsers.append(nombreUser);
 
     }
-
-
 }

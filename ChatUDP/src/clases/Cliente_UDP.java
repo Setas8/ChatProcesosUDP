@@ -39,14 +39,12 @@ public class Cliente_UDP implements Runnable {
     public void enviarListaClientes(String listaClientes) {
         enviarMensaje(listaClientes);
     }
-
     @Override
     public void run() {
         try {
             nombreCliente = new String(paquete.getData(), 0, paquete.getLength());
             System.out.println("Nuevo cliente conectado: " + nombreCliente);
 
-            //server.mandarMensaje(nombreCliente + " se unió al chat", this);
             server.mandarListaClientes();
 
             while (true) {
@@ -59,16 +57,11 @@ public class Cliente_UDP implements Runnable {
                 server.mandarMensaje(mensaje, this);
 
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally{
-            //Eliminar cliente
             server.eliminarCliente(this);
             server.mandarMensaje(nombreCliente + " abandonó el chat", this);
-
         }
-
     }
 }

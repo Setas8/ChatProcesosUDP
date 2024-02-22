@@ -16,9 +16,7 @@ public class Server_UDP {
     private static final int PUERTO_SERVER = 6001;
     private Set<Cliente_UDP> clientes = new HashSet<>();
 
-
     public void lanzar() {
-
 
         DatagramSocket sc;
 
@@ -36,16 +34,13 @@ public class Server_UDP {
                 clientes.add(cli);
                 Thread hiloCli = new Thread(cli);
                 hiloCli.start();
-
             }
-
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public void mandarMensaje(String mensaje, Cliente_UDP cliente){
 
         for(Cliente_UDP cl : clientes){
