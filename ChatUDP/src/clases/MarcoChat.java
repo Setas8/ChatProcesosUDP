@@ -147,7 +147,6 @@ public class MarcoChat extends JFrame {
                         // Si no es la lista de clientes, muestra el mensaje en el JTextArea de chat
                         taTextoChat.append(texto + "\n");
                     }
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();

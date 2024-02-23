@@ -10,7 +10,7 @@ public class Cliente_UDP implements Runnable {
     private DatagramSocket scUDP;
     private DatagramPacket paquete;//Cambiar a envío
     private Server_UDP server;
-    private String nombreCliente = "";  //Mandar en constructor????
+    private String nombreCliente = "";
 
     public Cliente_UDP(DatagramSocket scUDP, DatagramPacket paquete, Server_UDP server) {
 
@@ -59,9 +59,6 @@ public class Cliente_UDP implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally{
-            server.eliminarCliente(this);
-            server.mandarMensaje(nombreCliente + " abandonó el chat", this);
         }
     }
 }
